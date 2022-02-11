@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_get/providers/wordle_provider.dart';
+import 'package:flutter_get/utils/wordle.dart';
 import 'package:flutter_get/widgets/wordle/keyboard_button.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -65,13 +66,15 @@ class LetterButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        print("HELLO");
-        Provider.of<WordleProvider>(context, listen: false).typeLetter(text);
-      },
-      child: KeyboardButton(
-        text: text,
+    return Consumer<WordleProvider>(
+      builder: (context, provider, child) => InkWell(
+        onTap: () {
+          print("HELLO");
+          Provider.of<WordleProvider>(context, listen: false).typeLetter(text);
+        },
+        child: KeyboardButton(
+          letterPosition: provider.keyboardLetterPosition(text),
+        ),
       ),
     );
   }

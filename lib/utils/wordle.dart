@@ -2,11 +2,27 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/services.dart';
-
+import 'package:flutter_get/widgets/wordle/letter.dart';
+//
 // void main() {
-//   print("Hello World");
-//   // print(Couple.zip([1, 2, 3, 4], [9, 8]));
-//   print(validateWordPositions("pause", "poses"));
+//   var attemptedLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+//       .split("")
+//       .map(
+//         (letter) => LetterPosition(
+//             letter: letter, positionStatus: PositionStatus.unvalidated),
+//       )
+//       .toList();
+//   print(attemptedLetters);
+//   print("");
+//   var guessWord = [
+//     LetterPosition(letter: "P", positionStatus: PositionStatus.correct),
+//     LetterPosition(letter: "A", positionStatus: PositionStatus.misPositioned),
+//     LetterPosition(letter: "U", positionStatus: PositionStatus.misPositioned),
+//     LetterPosition(letter: "S", positionStatus: PositionStatus.notFound),
+//     LetterPosition(letter: "E", positionStatus: PositionStatus.notFound),
+//   ];
+//   LetterPosition.mutateValidateKeyboard(attemptedLetters, guessWord);
+//   print(attemptedLetters);
 // }
 
 const WORD_LENGTH = 5;
@@ -48,6 +64,31 @@ class LetterPosition {
       }
     }).toList();
     return x;
+  }
+
+  static PositionStatus positionStatusPower(
+      PositionStatus p1, PositionStatus p2) {
+    if (p1 == PositionStatus.correct || p2 == PositionStatus.correct) {
+      return PositionStatus.correct;
+    }
+    if (p1 == PositionStatus.misPositioned ||
+        p2 == PositionStatus.misPositioned) {
+      return PositionStatus.misPositioned;
+    }
+    if (p1 == PositionStatus.notFound || p2 == PositionStatus.notFound) {
+      return PositionStatus.notFound;
+    }
+    return PositionStatus.unvalidated;
+  }
+
+  static void mutateValidateKeyboard(List<LetterPosition> keyboard,
+      List<LetterPosition> validatedWordPosition) {
+    for (var guessedLetter in validatedWordPosition) {
+      var foundElement = keyboard
+          .firstWhere((element) => element.letter == guessedLetter.letter);
+      foundElement.positionStatus = positionStatusPower(
+          guessedLetter.positionStatus, foundElement.positionStatus);
+    }
   }
 
   static bool isCorrectLength(String word) => word.length == WORD_LENGTH;

@@ -48,6 +48,14 @@ class WordleProvider extends ChangeNotifier {
       LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
     ],
   ];
+
+  var attemptedLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+      .split("")
+      .map(
+        (letter) => LetterPosition(
+            letter: letter, positionStatus: PositionStatus.unvalidated),
+      )
+      .toList();
   // var attempts = [
   //   ...List.filled(6, [
   //     ...List.filled(
@@ -100,9 +108,10 @@ class WordleProvider extends ChangeNotifier {
       print("$guessedWord is not a word!");
       return "$guessedWord is not a word!";
     }
-
-    attempts[attempt] =
+    var validatedGuess =
         LetterPosition.validateWordPositions(guessedWord, answer);
+    attempts[attempt] = validatedGuess;
+    LetterPosition.mutateValidateKeyboard(attemptedLetters, validatedGuess);
     attempt++;
     charCount = 0;
     notifyListeners();
@@ -167,5 +176,20 @@ class WordleProvider extends ChangeNotifier {
       ],
     ];
     fetchWord();
+
+    attemptedLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        .split("")
+        .map(
+          (letter) => LetterPosition(
+              letter: letter, positionStatus: PositionStatus.unvalidated),
+        )
+        .toList();
+  }
+
+  LetterPosition keyboardLetterPosition(String letter) {
+    final result =
+        attemptedLetters.firstWhere((element) => element.letter == letter);
+    print("KEYBIARD: $result");
+    return result;
   }
 }
