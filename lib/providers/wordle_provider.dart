@@ -3,6 +3,8 @@ import 'package:flutter_get/utils/wordle.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/state_manager.dart';
 
+enum GameStatus { playing, lost, won }
+
 class WordleProvider extends ChangeNotifier {
   var attempts = [
     [
@@ -56,17 +58,11 @@ class WordleProvider extends ChangeNotifier {
             letter: letter, positionStatus: PositionStatus.unvalidated),
       )
       .toList();
-  // var attempts = [
-  //   ...List.filled(6, [
-  //     ...List.filled(
-  //         5,
-  //         LetterPosition(
-  //             letter: "", positionStatus: PositionStatus.unvalidated))
-  //   ])
-  // ];
+
   var attempt = 0;
   var answer = "";
   var charCount = 0;
+  var gameStatus = GameStatus.playing;
 
   WordleProvider() {
     fetchWord();
@@ -89,9 +85,9 @@ class WordleProvider extends ChangeNotifier {
   }
 
   Future<String> submitAttempt() async {
-    if (attempt >= 6) {
-      print("too sad w rab el3ebad,");
-      return "You lost";
+    if (attempt >= 5) {
+      gameStatus = GameStatus.lost;
+      return "You lost. the word is $answer";
     }
     if (charCount < 5) {
       print("Complete the word first!");
@@ -108,12 +104,17 @@ class WordleProvider extends ChangeNotifier {
       print("$guessedWord is not a word!");
       return "$guessedWord is not a word!";
     }
+
     var validatedGuess =
         LetterPosition.validateWordPositions(guessedWord, answer);
     attempts[attempt] = validatedGuess;
     LetterPosition.mutateValidateKeyboard(attemptedLetters, validatedGuess);
     attempt++;
     charCount = 0;
+    if (guessedWord == answer) {
+      // WINNING
+      gameStatus = GameStatus.won;
+    }
     notifyListeners();
     return "";
   }
@@ -131,6 +132,7 @@ class WordleProvider extends ChangeNotifier {
   void reset() {
     charCount = 0;
     attempt = 0;
+    gameStatus = GameStatus.playing;
     attempts = [
       [
         LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),

@@ -36,7 +36,17 @@ class _WordleState extends State<Wordle> {
           children: [
             Spacer(),
             Consumer<WordleProvider>(
-                builder: (context, provider, child) => Grid(provider.attempts)),
+                builder: (context, provider, child) => Column(
+                      children: [
+                        Text(
+                          provider.gameStatus == GameStatus.lost
+                              ? "YOU LOST"
+                              : "",
+                          style: const TextStyle(fontSize: 24),
+                        ),
+                        Grid(provider.attempts),
+                      ],
+                    )),
             Spacer(),
             Keyboard(),
             Spacer(),
