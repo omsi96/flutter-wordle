@@ -10,8 +10,10 @@ class Grid extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(top: 20),
       child: Column(
-        children:
-            lettersGrid.map((lettersRow) => LettersRow(lettersRow)).toList(),
+        children: [
+          for (int i = 0; i < lettersGrid.length; i++)
+            LettersRow(lettersGrid[i], key: Key("$i"))
+        ],
       ),
     );
   }

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_get/pages/home_page.dart';
 import 'package:flutter_get/pages/wordle.dart';
+import 'package:flutter_get/providers/wordle_provider.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/route_manager.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+      builder: (context, child) => const MyApp(),
+      create: (context) => WordleProvider()));
 }
 
 class MyApp extends StatelessWidget {

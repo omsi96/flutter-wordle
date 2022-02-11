@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_get/controller/wordle.controller.dart';
+import 'package:flutter_get/providers/wordle_provider.dart';
 import 'package:flutter_get/utils/wordle.dart';
 import 'package:flutter_get/widgets/wordle/grid.dart';
 import 'package:flutter_get/widgets/wordle/keyboard.dart';
 import 'package:flutter_get/widgets/wordle/letter.dart';
 // import 'package:get/get_state_manager/get_state_manager.dart';
 import "package:get/get.dart";
+import 'package:provider/provider.dart';
 
 class Wordle extends StatefulWidget {
   Wordle({Key? key}) : super(key: key);
@@ -15,10 +17,8 @@ class Wordle extends StatefulWidget {
 }
 
 class _WordleState extends State<Wordle> {
-  WordleController controller = Get.put(WordleController());
   @override
   Widget build(BuildContext context) {
-    final lettersOfGrid = controller.attempts as List<List<LetterPosition>>;
     return Scaffold(
       appBar: AppBar(
         title: Text("WORDLE!"),
@@ -27,12 +27,8 @@ class _WordleState extends State<Wordle> {
         child: Column(
           children: [
             Spacer(),
-            Grid(lettersOfGrid),
-            // ElevatedButton(
-            //     onPressed: () {
-            //       controller.typeLetter("B");
-            //     },
-            //     child: Text("B")),
+            Consumer<WordleProvider>(
+                builder: (context, provider, child) => Grid(provider.attempts)),
             Spacer(),
             Keyboard(),
             Spacer(),
