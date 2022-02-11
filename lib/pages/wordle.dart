@@ -22,6 +22,14 @@ class _WordleState extends State<Wordle> {
     return Scaffold(
       appBar: AppBar(
         title: Text("WORDLE!"),
+        actions: [
+          InkWell(
+            child: Container(
+                margin: EdgeInsets.all(6), child: Icon(Icons.loop_rounded)),
+            onTap: () =>
+                Provider.of<WordleProvider>(context, listen: false).reset(),
+          )
+        ],
       ),
       body: SafeArea(
         child: Column(

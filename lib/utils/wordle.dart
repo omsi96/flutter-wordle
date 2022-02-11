@@ -1,4 +1,7 @@
+import 'dart:convert';
 import 'dart:math';
+
+import 'package:flutter/services.dart';
 
 // void main() {
 //   print("Hello World");
@@ -78,5 +81,26 @@ class Couple<T> {
       temp.add(Couple(arr1[i], arr2[i]));
     }
     return temp;
+  }
+}
+
+class Wordle {
+  // Fetch content from the json file
+  static Future<String> getRandomWord() async {
+    final String response = await rootBundle.loadString('assets/dataset.json');
+    final data = json.decode(response);
+    // print("DATA: $data");
+    return data[Random().nextInt(data.length)];
+  }
+
+  static Future<bool> validateWord(String word) async {
+    final String response = await rootBundle.loadString('assets/dataset.json');
+    // print("RESPONSE: $response");
+    final data = (json.decode(response) as List)
+        .map((e) => (e as String).toLowerCase())
+        .toList();
+    print("LIST: ${data.runtimeType}");
+
+    return data.contains(word.toLowerCase());
   }
 }

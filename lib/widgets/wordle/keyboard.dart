@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_get/providers/wordle_provider.dart';
 import 'package:flutter_get/widgets/wordle/keyboard_button.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class Keyboard extends StatelessWidget {
@@ -25,9 +26,13 @@ class Keyboard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             InkWell(
-              onTap: () {
-                Provider.of<WordleProvider>(context, listen: false)
-                    .submitAttempt();
+              onTap: () async {
+                final provider =
+                    Provider.of<WordleProvider>(context, listen: false);
+                final message = await provider.submitAttempt();
+                if (message.isNotEmpty) {
+                  Get.snackbar("Error", message);
+                }
               },
               child: KeyboardButton(
                   icon: Icons.subdirectory_arrow_left_rounded, width: 50),

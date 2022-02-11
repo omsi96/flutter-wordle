@@ -57,8 +57,18 @@ class WordleProvider extends ChangeNotifier {
   //   ])
   // ];
   var attempt = 0;
-  var answer = "PAUSE";
+  var answer = "";
   var charCount = 0;
+
+  WordleProvider() {
+    fetchWord();
+  }
+
+  void fetchWord() async {
+    answer = await Wordle.getRandomWord();
+    print("ANSWERE: $answer");
+    notifyListeners();
+  }
 
   void typeLetter(String letter) {
     if (charCount >= 5) return; // Can't type more than 5 letters
@@ -70,25 +80,33 @@ class WordleProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void submitAttempt() {
+  Future<String> submitAttempt() async {
     if (attempt >= 6) {
       print("too sad w rab el3ebad,");
-      return;
+      return "You lost";
     }
     if (charCount < 5) {
       print("Complete the word first!");
-      return;
+      return "Word incomplete";
     }
 
     final guessedWord =
         attempts[attempt].map((e) => e.letter).toList().join("");
     print("The gueessed word is $guessedWord");
 
+    final validWord = await Wordle.validateWord(guessedWord);
+    print("is valid word: $validWord");
+    if (!validWord) {
+      print("$guessedWord is not a word!");
+      return "$guessedWord is not a word!";
+    }
+
     attempts[attempt] =
         LetterPosition.validateWordPositions(guessedWord, answer);
     attempt++;
     charCount = 0;
     notifyListeners();
+    return "";
   }
 
   void erase() {
@@ -99,5 +117,55 @@ class WordleProvider extends ChangeNotifier {
     attempts[attempt][charCount] =
         LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated);
     notifyListeners();
+  }
+
+  void reset() {
+    charCount = 0;
+    attempt = 0;
+    attempts = [
+      [
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+      ],
+      [
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+      ],
+      [
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+      ],
+      [
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+      ],
+      [
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+      ],
+      [
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+        LetterPosition(letter: "", positionStatus: PositionStatus.unvalidated),
+      ],
+    ];
+    fetchWord();
   }
 }
